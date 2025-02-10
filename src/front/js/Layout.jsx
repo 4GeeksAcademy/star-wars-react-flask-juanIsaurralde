@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import injectContext from "./store/appContext";
+import injectContext from "./store/appContext.js";
 // Custom Component
 import ScrollToTop from "./component/ScrollToTop.jsx";
 import { BackendURL } from "./component/BackendURL.jsx";
@@ -12,6 +12,7 @@ import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 import { Contact } from "./pages/Contact.jsx";
 import { Error404 } from "./pages/Error404.jsx";
+import { ContactForm } from "./pages/ContactForm.jsx";
 
 
 //create your first component
@@ -23,7 +24,7 @@ const Layout = () => {
     if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
 
     return (
-        <div>
+        <div className="d-flex flex-column min-vh-100">
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
@@ -32,6 +33,8 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Contact />} path="/contact" />
+                        <Route element={<ContactForm />} path="/contact/new" />
+                        <Route element={<ContactForm />} path="/contact/edit" />
                         <Route element={<Error404/>} path="*"/>
                     </Routes>
                     <Footer />
