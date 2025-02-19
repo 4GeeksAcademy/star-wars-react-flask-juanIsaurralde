@@ -28,9 +28,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"address": "Ejemplo",
 			},
 			user: 'juanIsa',
-			isEdit: false
+			isEdit: false,
+
+			people: [],
+			planets: [],
+			starships: [],
+
+			favorites: [],
+			currentItems: 'people',
+			currentDetail: {},
+			isLoading: false
 		},
 		actions: {
+			// CONTACTS API
+			createAgenda: async () => {
+
+				const url = `${process.env.CONTACT_BASE_URL}/${getStore().user}`;
+				const options = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' }
+				};
+				const response = await fetch(url, options);
+				if (!response.ok) {
+					console.log("Error Creating Agenda: ", response.status, response.statusText);
+					return
+				}
+				setStore({ currentContact: getStore().mockContact })
+				getActions().createContact()
+			},
 			getContacts: async () => {
 				const url = `${process.env.CONTACT_BASE_URL}/${getStore().user}/contacts`;
 				const options = { method: 'GET' };
@@ -94,30 +119,59 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				getActions().getContacts()
 			},
-			createAgenda: async () => {
-				
-					const url = `${process.env.CONTACT_BASE_URL}/${getStore().user}`;
-					const options = {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' }
-					};
+			setCurrentContact: (contactData) => {
+				setStore({ currentContact: contactData });
+			},
+			setIsEdit: (isEditMode) => {
+				setStore({ isEdit: isEditMode })
+			},
+			// STARWARS API
+			getDetails: async (url, uid) => {
+				setStore({ isLoading: true })
+				const options = { method: 'GET' };
+				const response = await fetch(url, options);
+				if (!response.ok) {
+					console.log("Error: ", response.status, response.statusText);
+					return
+				}
+				const data = await response.json();
+				setStore({ currentDetail: { ...data.result.properties, uid } })
+				setStore({ isLoading: false })
+			},
+			getData: async (section) => {
+				if (!localStorage.getItem(section)) {
+					const url = `${process.env.STAR_WARS_DATA_API}/${section}`;
+					const options = { method: 'GET' };
 					const response = await fetch(url, options);
 					if (!response.ok) {
-						console.log("Error Creating Agenda: ", response.status, response.statusText);
+						console.log("Error: ", response.status, response.statusText);
 						return
 					}
-					setStore({ currentContact: getStore().mockContact })
-					getActions().createContact()
+					const data = await response.json();
+					setStore({ [section]: data.results })
+					getActions().setObjectInLocalStorage(section, data.results)
+				} else {
+					setStore({ [section]: JSON.parse(localStorage.getItem(section)) })
+				}
 			},
-			
-			setCurrentContact: (contactData)=>{
-				setStore({currentContact: contactData});
+			setCurrentItems: (itemsType) => {
+				setStore({ currentItems: itemsType })
 			},
-			setIsEdit: (isEditMode)=>{
-				setStore({isEdit: isEditMode})
+			setFavorites: (value) => {
+				if (getStore().favorites.indexOf(value) === -1) {
+					setStore({ favorites: [...getStore().favorites, value] })
+				} else {
+					setStore({ favorites: getStore().favorites.filter((item) => item != value) })
+				}
 			},
 
-
+			// GENERAL
+			capitalice: (text) => {
+				return text.charAt(0).toUpperCase() + text.slice(1)
+			},
+			setObjectInLocalStorage: (section, data) => {
+				localStorage.setItem(section, JSON.stringify(data));
+			},
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
