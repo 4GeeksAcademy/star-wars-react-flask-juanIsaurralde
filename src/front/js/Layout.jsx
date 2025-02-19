@@ -8,11 +8,13 @@ import { Navbar } from "./component/Navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
 // Custom Pages or views
 import { Home } from "./pages/Home.jsx";
+import { Cards } from "./pages/Cards.jsx";
 import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 import { Contact } from "./pages/Contact.jsx";
 import { Error404 } from "./pages/Error404.jsx";
 import { ContactForm } from "./pages/ContactForm.jsx";
+import { Details } from "./pages/Details.jsx";
 
 
 //create your first component
@@ -25,6 +27,8 @@ const Layout = () => {
 
     return (
         <div className="d-flex flex-column min-vh-100">
+            <div className="stars"></div>
+            <div className="nebula"></div>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
@@ -35,6 +39,10 @@ const Layout = () => {
                         <Route element={<Contact />} path="/contact" />
                         <Route element={<ContactForm />} path="/contact/new" />
                         <Route element={<ContactForm />} path="/contact/edit" />
+                        <Route element={<Cards />} path="/characters" />
+                        <Route element={<Cards />} path="/planets" />
+                        <Route element={<Cards />} path="/starships" />
+                        <Route element={<Details />} path="/details" />
                         <Route element={<Error404/>} path="*"/>
                     </Routes>
                     <Footer />
