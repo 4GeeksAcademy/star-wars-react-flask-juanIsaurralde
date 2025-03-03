@@ -10,7 +10,6 @@ export const Navbar = () => {
 		actions.setFavorites(item)
 	}
 	return (
-
 		<nav className="navbar navbar-expand-lg navbar-dark bg-dark-custom p-3">
 			<div className="container-fluid d-flex justify-content-between">
 				<Link to="/" role="button">

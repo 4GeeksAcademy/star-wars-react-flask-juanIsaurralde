@@ -8,7 +8,7 @@ export const ContactForm = () => {
     const [phone, setPhone] = useState(store.currentContact.phone);
     const [email, setEmail] = useState(store.currentContact.email);
     const [address, setAddress] = useState(store.currentContact.address);
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -22,7 +22,6 @@ export const ContactForm = () => {
         // todo: manage empty contact
         store.isEdit ? actions.updateContact() : actions.createContact();
         navigate('/contact')
-
     }
     return (
         <div >

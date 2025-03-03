@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			jennyAnnie: 'vengo del store',
 			message: null,
 			demo: [
 				{
@@ -40,6 +41,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLoading: false
 		},
 		actions: {
+			cambiarJennyAnnie: (valorNuevo) => {
+				setStore({jennyAnnie: valorNuevo})
+			},
 			// CONTACTS API
 			createAgenda: async () => {
 
