@@ -46,7 +46,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			// CONTACTS API
 			createAgenda: async () => {
-
 				const url = `${process.env.CONTACT_BASE_URL}/${getStore().user}`;
 				const options = {
 					method: 'POST',
