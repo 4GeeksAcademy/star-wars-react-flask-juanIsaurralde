@@ -1,7 +1,6 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			jennyAnnie: 'vengo del store',
 			message: null,
 			demo: [
 				{
@@ -29,6 +28,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				"address": "Ejemplo",
 			},
 			user: 'juanIsa',
+			isLogged: false,
 			isEdit: false,
 
 			people: [],
@@ -41,8 +41,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLoading: false
 		},
 		actions: {
-			cambiarJennyAnnie: (valorNuevo) => {
-				setStore({jennyAnnie: valorNuevo})
+			login: () => {
+				console.log('hello there')
+				setStore({isLogged: true})
 			},
 			// CONTACTS API
 			createAgenda: async () => {

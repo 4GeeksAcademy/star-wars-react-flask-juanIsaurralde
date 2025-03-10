@@ -218,6 +218,7 @@ def delete_user_favorites_character(user_id, characters_id):
     response_body['messaje'] = 'Se borro exitosamente'
     return response_body, 200
 
+
 @api.route('/users/<int:user_id>/favorites-planets/<int:planet_id>', methods=['DELETE'])
 def delete_user_favorites_planet(user_id, planet_id):
     response_body = {}
