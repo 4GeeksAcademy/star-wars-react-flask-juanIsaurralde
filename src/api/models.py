@@ -58,8 +58,8 @@ class Followers(db.Model):
         return {"id": self.id,
                 "following_id": self.following_id,
                 "following_to": self.following_to,
-                "follower_id": self.following_id,
-                "follower_to": self.following_to}
+                "follower_id": self.follower_id,
+                "follower_to": self.follower_to}
 
 
 class Medias(db.Model):
@@ -156,6 +156,7 @@ class Planets(db.Model):
     population = db.Column(db.String)
     climate = db.Column(db.String)
     terrain = db.Column(db.String)
+    surface_water = db.Column(db.String)
 
     def __repr__(self):
         return f"<Planets: {self.name}>"

@@ -10,6 +10,7 @@ import requests
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt
 
 
 api = Blueprint('api', __name__)
@@ -49,6 +50,7 @@ def product(id):
     
 # From SWAPI
 @api.route('/characters', methods=['GET', 'POST'])
+@jwt_required()
 def characters():
     response_body = {}
     if request.method == 'GET':
@@ -118,17 +120,6 @@ def planet(planet_id):
 
 
 # From the DB
-@api.route('/users', methods=['GET', 'POST'])
-def users():
-    response_body = {}
-    if request.method == 'GET':
-        rows = db.session.execute(db.select(Users)).scalars()
-        results = [row.serialize() for row in rows]
-        response_body["message"] = f"Listado de Usuarios"
-        response_body["results"] = results
-        return response_body, 200
-
-
 @api.route("/login", methods=["POST"])
 def login():
     response_body = {}
@@ -143,9 +134,11 @@ def login():
     claims = {'user_id': user['id'],
               'is_admin': user['is_admin']}
     print(claims)
+
     access_token = create_access_token(identity=email, additional_claims=claims )
-    response_body['message'] = 'User logged'
+    response_body['message'] = f'User {user["first_name"]} logged'
     response_body['access_token'] = access_token
+    response_body['results'] = user
     return response_body, 200
 
 
@@ -155,21 +148,56 @@ def protected():
     # Access the identity of the current user with get_jwt_identity
     response_body = {}
     current_user = get_jwt_identity()
-    response_body['message'] = f'User logged: {current_user}'
+    additional_claims = get_jwt()  # Los datos adicionales
+    response_body['message'] = f'User logged: {current_user} - {additional_claims}'
     return response_body, 200
+    
+
+@api.route('/users', methods=['GET'])
+def users():
+    response_body = {}
+    if request.method == 'GET':
+        rows = db.session.execute(db.select(Users)).scalars()
+        results = [row.serialize() for row in rows]
+        response_body["message"] = f"Listado de Usuarios"
+        response_body["results"] = results
+        return response_body, 200
+
+
+@api.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
+def user(user_id):
+    response_body = {}
+    if request.method == 'GET':
+        row = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
+        results = row.serialize()
+        response_body["message"] = f"usuario {user_id}"
+        response_body["results"] = results
+        return response_body, 200
+    if request.method == 'PUT':
+        response_body["message"] = f"Perfil modificado correctamente"
+        return response_body, 200     
+    if request.method == 'DELETE':
+        @jwt_required() # solo lo puse a modo de probar como segurizar solo un metodo dentro de un endpoint
+        def delete_user():
+            roquefort = get_jwt()['user_id'] 
+            # row = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
+            # db.session.delete(row)
+            # db.session.commit()
+            response_body["message"] = f"Usuario eliminado correctamente, {roquefort}"
+            return response_body, 200
+        return delete_user()
 
 
 @api.route('/users/<int:user_id>/favorites', methods=['GET'])
-def user(user_id):
+def userFavorites(user_id):
     response_body = {}
     rows = db.session.execute(db.select(CharacterFavorites).where(CharacterFavorites.user_id == user_id)).scalars()
     result_character = [row.serialize() for row in rows]
     rows = db.session.execute(db.select(PlanetFavorites).where(PlanetFavorites.user_id == user_id)).scalars()
     result_planets = [row.serialize() for row in rows]
     results = [result_character, result_planets]
-    response_body["message"] = f"Listado de Usuarios"
+    response_body["message"] = f"Listado de todos los favoritos del usuario con id {user_id}"
     response_body["results"] = results
-
     return response_body, 200
 
 
@@ -225,5 +253,5 @@ def delete_user_favorites_planet(user_id, planet_id):
     row = db.session.execute(db.select(PlanetFavorites).where(PlanetFavorites.user_id == user_id, PlanetFavorites.planet_id == planet_id )).scalar()
     db.session.delete(row)
     db.session.commit()
-    response_body['messaje'] = 'Se borro exitosamente'
+    response_body['message'] = 'Se borro exitosamente'
     return response_body, 200

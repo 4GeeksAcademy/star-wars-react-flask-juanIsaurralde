@@ -1,29 +1,37 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
-const {store, actions}= useContext(Context)
-const navigate = useNavigate()
-const handleLogin = () => {
-    actions.login();
-    navigate('/')
-}
+    const { store, actions } = useContext(Context)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate()
+    const handleLogin = (event) => {
+        event.preventDefault()
+        const dataToSend = { email, password }
+        actions.login(dataToSend); 
+    }
+    useEffect(()=>{
+        if(store.isLogged){
+            navigate('/home')
+        }
+    },[store.isLogged])
     return (
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-4">
-                    <h2 class="text-center">Login</h2>
+        <div className="container">
+            <div className="row justify-content-center">
+                <div className="col-md-4">
+                    <h2 className="text-center">Login</h2>
                     <form id="loginForm" onSubmit={handleLogin}>
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="Enter username" required/>
+                        <div className="form-group">
+                            <label htmlFor="username">Email</label>
+                            <input type="text" className="form-control" id="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Enter Email" required />
                         </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Enter password" required/>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input type="password" className="form-control" id="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Enter password" required />
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <button type="submit" className="btn btn-primary btn-block">Login</button>
                     </form>
                 </div>
             </div>

@@ -16,6 +16,7 @@ import { Error404 } from "./pages/Error404.jsx";
 import { ContactForm } from "./pages/ContactForm.jsx";
 import { Details } from "./pages/Details.jsx";
 import { Login } from "./pages/Login.jsx";
+import { Profile } from "./pages/Profile.jsx";
 
 
 //create your first component
@@ -33,12 +34,9 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
-                    <Routes>
-                        <Route element={<Login />} path="/login" />
-                    </Routes>
-                    {store.isLogged ?
                         <Routes>
-                            <Route element={<Home />} path="/" />
+                            <Route element={<Login />} path="/" />
+                            <Route element={<Home />} path="/home" />
                             <Route element={<Demo />} path="/demo" />
                             <Route element={<Single />} path="/single/:theid" />
                             <Route element={<Contact />} path="/contact" />
@@ -48,11 +46,9 @@ const Layout = () => {
                             <Route element={<Cards />} path="/planets" />
                             <Route element={<Cards />} path="/starships" />
                             <Route element={<Details />} path="/details" />
+                            <Route element={<Profile />} path="/profile" />
                             <Route element={<Error404 />} path="*" />
                         </Routes>
-                        :
-                        <Navigate to="/login" />
-                    }
                     <Footer />
                 </ScrollToTop>
             </BrowserRouter>

@@ -6,7 +6,6 @@ import "../../styles/home.css";
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
-	console.log(store.jennyAnnie)
 	const handleCLick = () => {
 		actions.cambiarJennyAnnie('Estoy en home')
 	}

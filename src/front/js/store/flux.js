@@ -41,9 +41,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLoading: false
 		},
 		actions: {
-			login: () => {
-				console.log('hello there')
-				setStore({isLogged: true})
+			login: async (dataToLogin) => {
+				const url = `${process.env.BACKEND_URL}/api/login`;
+				const options = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(dataToLogin)
+				};
+				const response = await fetch(url, options);
+				if (!response.ok) {
+					console.log("Error Creating Agenda: ", response.status, response.statusText);
+					return
+				}
+				const data =  await response.json()
+				console.log('data', data)
+				setStore({
+					user: data.results.first_name,
+					isLogged: true
+				})
+				getActions().setObjectInLocalStorage('token', data.results.access_token)
 			},
 			// CONTACTS API
 			createAgenda: async () => {
